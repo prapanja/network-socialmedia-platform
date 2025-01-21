@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+    {% if message %}
+    <div class="alert alert-primary">{{ message }}</div>
+    {% endif %}
+    <div class="login-container">
+        <div id="login-form">
+            <h2 class="centered-text">Register</h2>
+            <hr>
+            <form action="{% url 'register' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group icon-container">
+                    <img class='custom-icon' src="{% static 'network/user-16-16.png' %}">
+                    <input class="form-control" type="text" name="username" placeholder="Username" required>
+                </div>
+                <div class="form-group icon-container">
+                    <img class='custom-icon' src="{% static 'network/user-16-16.png' %}">
+                    <input class="form-control" type="text" name="first_name" placeholder="First Name" required>
+                </div>
+                <div class="form-group icon-container">
+                    <img class='custom-icon' src="{% static 'network/user-16-16.png' %}">
+                    <input class="form-control" type="text" name="last_name" placeholder="Last Name" required>
+                </div>
+                <div class="form-group icon-container">
+                    <img class='custom-icon' src="{% static 'network/user-16-16.png' %}">
+                    <input class="form-control" type="email" name="email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group icon-container">
+                    <img class='custom-icon' src="{% static 'network/key.png' %}">
+                    <input class="form-control" type="password" name="password" placeholder="Password" required>
+                </div>
+                
+                <input class="btn btn-primary btn-block" type="submit" value="Register">
+            </form>
+            <hr>
+            <p class="centered-text">Already have an account? <a href="{% url 'login' %}">Log In here.</a></p>
+        </div>
+    </div>
+    <style>
+        body {
+            background-color: rgb(62, 57, 57);
+            color: white;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 50px;
+            background-color: #2f2c2c;
+            border-radius: 10px;
+        }
+        #login-form {
+            padding: 20px;
+        }
+        .form-control {
+            background-color: #555;
+            color: white;
+            border: none;
+        }
+        .form-control::placeholder {
+            color: #bbb;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .centered-text {
+            text-align: center;
+        }
+        .icon-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .custom-icon {
+            margin-right: 10px;
+        }
+        .alert-primary {
+            background-color: #004085;
+            border-color: #b8daff;
+            color: #fff;
+        }
+    </style>
+{% endblock %}

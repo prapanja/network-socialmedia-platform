@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="container">
+    <h1>Profile</h1>
+    {% if is_following %}
+    <div id="unfollow"></div>
+        <button id="unfollowButton" name="{{ post.user.username }}" class="btn btn-danger">Unfollow</button>
+    </div>
+    <div id="follow" class="hidden">
+        <button id="followButton" name="{{ post.user.username }}" class="btn btn-primary">Follow</button>
+    </div>
+    {% else %}
+    <div id="unfollow" class="hidden">
+        <button id="unfollowButton" name="{{ post.user.username }}" class="btn btn-danger">Unfollow</button>
+    </div>
+    <div id="follow">
+        <button id="followButton" name="{{ post.user.username }}" class="btn btn-primary">Follow</button>
+    </div>
+    {% endif %}
+    <div id="user-posts-view" class="mt-4">
+        {% for post in posts %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.user.username }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ post.datetime }}</h6>
+                    <p class="card-text">{{ post.content }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {{ is_following }}
+    {{ follow_state }}
+</div>
+{% endblock %}

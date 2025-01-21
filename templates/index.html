@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+    <style>
+        
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        #postContent {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #postButton {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #postButton:hover {
+            background-color: #0056b3;
+        }
+
+        #all-posts-view {
+            margin-top: 20px;
+        }
+
+        .post {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Network</a>
+      
+        <div>
+          <ul class="navbar-nav mr-auto">
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><strong id="username">{{ user.username }}</strong></a>
+                </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'index' %}">All Posts</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'following' %}">Following</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Log Out</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                </li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+    
+    <div class="body"></div>
+
+    <div>
+        <textarea name="postContent" id="postContent" placeholder="Post" style="height: 50px;"></textarea>
+        <button id="postButton">Post</button>
+    </div>
+    <div id="all-posts-view">
+
+    </div>   
+    {% for post in posts %}
+        <div class="post">
+            <p><strong>{{ post.user.username }}</strong></p>
+            <p>{{ post.content }}</p>
+            <p><small>{{ post.timestamp }}</small></p>
+        </div>
+    {% endfor %}
+
+    
+{% endblock %}
