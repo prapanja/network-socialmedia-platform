@@ -3,6 +3,19 @@ from django.db import models
 # https://stackoverflow.com/questions/8609192/what-is-the-difference-between-null-true-and-blank-true-in-django
 
 
+from django.conf import settings
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
+    profile_pic = models.ImageField(upload_to="profile_pics", null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
+    followers_count = models.PositiveIntegerField(default=0)
+    following_count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.user.username
+
+
 class User(AbstractUser):
     # We have username, email, hashed password.
     pass
@@ -10,21 +23,19 @@ class User(AbstractUser):
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_posts")
     datetime = models.DateTimeField(auto_now_add=True)
-    content = models.TextField()
+    caption = models.TextField()
+    image = models.ImageField(upload_to="postimages", null=True, blank=True)
 
     def __str__(self):
-        s = f"User: {self.user}"
-        s += f"time: {self.datetime}"
+        return f"User: {self.user}, Time: {self.datetime}, Caption: {self.caption}"
 
-        return s
-    
     def serialize(self):
         return {
             "id": self.id,
             "username": self.user.username,
             "user": self.user.id,
             "datetime": self.datetime,
-            "content": self.content
+            "caption": self.caption,
         }
 
 class Like(models.Model):
@@ -49,3 +60,8 @@ class Following(models.Model):
         s += f"Following: {self.follow_state}"
 
         return s
+
+
+
+
+

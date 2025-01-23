@@ -3,26 +3,31 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.urls import reverse
-import json
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
-from .models import User, Post, Like, Following
+from .models import Post, User, Like, Following,Profile
+from django.conf import settings
 
-'''
-Related name help 
-https://mrprabhatmishra.medium.com/how-to-use-related-name-attribute-in-django-model-db6c7d8d20cf
-
-Query Set order by function help
-https://www.w3schools.com/django/django_queryset_orderby.php
-
-Serialization Help
-https://www.google.com/search?q=JsonResponse+safe+parameter+python&oq=JsonResponse+safe+parameter+python&aqs=chrome..69i57.7838j0j7&sourceid=chrome&ie=UTF-8d
-https://machinelearningmastery.com/a-gentle-introduction-to-serialization-for-python/#:~:text=Serialization%20refers%20to%20the%20process,the%20reverse%20process%20of%20deserialization.
-'''
+# from django.contrib.auth.models import User
 
 def index(request):
-    return render(request,"index.html")
+    posts = Post.objects.all().order_by("-datetime")  # Fetch posts ordered by newest
+    return render(request, "index.html", {"Posts": posts})
+
+@login_required
+def comment_post(request, post_id):
+    """
+    Handle adding a comment to a post.
+    """
+    if request.method == "POST":
+        post = get_object_or_404(Post, id=post_id)
+        content = request.POST.get("comment", "").strip()
+
+        if content:
+            Comment.objects.create(post=post, user=request.user, content=content)
+
+        return redirect('profile', username=request.user.username)
 
 def login_view(request):
 
@@ -67,31 +72,32 @@ def register(request):
         )
         
         user.save()
-        return redirect('index')
+        return redirect('login')
 
     return render(request, "register.html")
 
 
 # put data here throught fetch put method
 
-def post(request):
 
-    if request.method == "GET":
-        # return JsonResponse({"response": "Must use post request."}, status=400)
-        posts = Post.objects.all()
-        posts = posts.order_by("-datetime").all()
-        # if you want to serialize, you have to define serialize function for the class (e.g our model)
-        return JsonResponse([post.serialize() for post in posts], safe=False)
-    else:
-        data = json.loads(request.body)
-        post = data.get("postContent")
-        # post = request.POST["postContent"]
-        # return JsonResponse({"response": post})
-        curr_user = User.objects.get(id=request.user.id)
-        new_post = Post(content=post, user=curr_user)
-        new_post.save()
+@login_required
+def post(request, post_id=None):
+    if request.method == "POST":
+        caption = request.POST.get("caption")
+        image = request.FILES.get('image')
 
-        return JsonResponse({"response": "Success"}, status=201)
+        if caption and image:
+            curr_user = request.user  # Authenticated user
+            post = Post(caption=caption, user=curr_user, image=image)
+            post.save()
+            return redirect('index')  # Redirect to index to display the new post
+
+    # Fetch all posts for rendering
+    posts = Post.objects.all().order_by("-datetime")
+    curr_user = request.user  # Authenticated user
+    return render(request, "post.html", {"Posts": posts, "curr_user": curr_user})
+
+
 
 def user_posts(request):
     users_posts = Post.objects.filter(user=request.user)
@@ -125,6 +131,28 @@ def profile(request, username):
             "followers": 0,
             "following": 0
         })
+
+
+from django.shortcuts import render, get_object_or_404
+# from django.contrib.auth.models import User
+
+def profile_view(request, username):
+    # Get the user object or return a 404 if not found
+    user = get_object_or_404(User, username=username)
+    
+    # Example: Fetch user-related posts if using a Post model
+    posts = user.post_set.all()  # Assuming a ForeignKey(User) in Post model
+
+    # Check if the logged-in user is following the profile owner
+    is_following = request.user in user.profile.followers.all() if request.user.is_authenticated else False
+
+    context = {
+        'profile_user': user,
+        'posts': posts,
+        'is_following': is_following
+    }
+    return render(request, 'profile.html', context)
+
 
 def like(request, post_id):
 
@@ -198,12 +226,45 @@ def follow(request, username):
         # return JsonResponse({"following":follow.follow_state})
 
 # TODO: This should only be for logged in users
-def following(request):
-    # Get current user.
-    user = User.objects.get(id=request.user.id)
-    # Get all people user follows.
-    following = Following.objects.filter(user=user)
-    # Get all posts from people user follow.
-    followingPosts = Post.objects.filter()
+# def following(request):
+#     # Get current user.
+#     user = User.objects.get(id=request.user.id)
+#     # Get all people user follows.
+#     following = Following.objects.filter(user=user)
+#     # Get all posts from people user follow.
+#     followingPosts = Post.objects.filter()
 
-    return JsonResponse([])
+#     return JsonResponse([])
+@login_required
+def following(request):
+    user = User.objects.get(id=request.user.id)
+    following_users = Following.objects.filter(user=user, follow_state=True).values_list('user_being_followed', flat=True)
+    posts = Post.objects.filter(user__id__in=following_users).order_by('-datetime')
+    return render(request, "following.html", {"posts": posts})
+
+
+@login_required
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == "POST":
+        post.delete()
+        return redirect('profile', username=request.user.username)
+    return redirect('profile', username=request.user.username)
+
+@login_required
+def update_profile(request):
+    # Ensure the user has a profile
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        bio = request.POST.get("bio", profile.bio)
+        profile_pic = request.FILES.get("profile_pic")
+
+        profile.bio = bio
+        if profile_pic:
+            profile.profile_pic = profile_pic
+        profile.save()
+
+        return redirect('profile', username=request.user.username)  # Redirect to the profile page after updating
+
+    return render(request, "update_profile.html", {"profile": profile})

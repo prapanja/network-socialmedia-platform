@@ -126,15 +126,4 @@ input.btn {
 .user{
     font-weight: bold;
 }
-/* .inbox-email:nth-child(1){
-    flex-grow: 1;
-}
-.inbox-email:nth-child(2){
-    flex-grow: 5;
-}
-.inbox-email:nth-child(3){
-    flex-grow: 5;
-}
-.inbox-email:nth-child(4){
-    flex-grow: 1;
-} */
+

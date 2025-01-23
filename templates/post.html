@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+         {% block body %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        input[type="text"], textarea, input[type="file"] {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #3945ac;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #060347;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Add a New Post</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" name="caption" placeholder="Caption">
+            <input type="file" name="image" accept="image/*,video/*">
+            <button type="submit">Add Post</button>
+        </form>
+    </div>
+    <script>
+        const mediaInput = document.querySelector('input[name="image"]');
+        const previewContainer = document.createElement('div');
+        previewContainer.style.marginTop = '20px';
+        document.querySelector('.container').appendChild(previewContainer);
+
+        mediaInput.addEventListener('change', function() {
+            previewContainer.innerHTML = '';
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.createElement(file.type.startsWith('image/') ? 'img' : 'video');
+                    preview.src = e.target.result;
+                    preview.style.maxWidth = '100%';
+                    preview.controls = true;
+                    previewContainer.appendChild(preview);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+{% endblock body %}

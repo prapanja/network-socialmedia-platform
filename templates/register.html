@@ -2,7 +2,20 @@
 {% load static %}
 
 {% block body %}
-
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand font-weight-bold" href="#">My Network</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Login</a>
+            </li>
+            
+        </ul>
+    </div>
+</nav>
     {% if message %}
     <div class="alert alert-primary">{{ message }}</div>
     {% endif %}
@@ -13,23 +26,23 @@
             <form action="{% url 'register' %}" method="post">
                 {% csrf_token %}
                 <div class="form-group icon-container">
-                    <img class='custom-icon' src="{% static 'network/user-16-16.png' %}">
+                    <!-- < class='custom-icon' src="{% static 'network/user-16-16img.png' %}"> -->
                     <input class="form-control" type="text" name="username" placeholder="Username" required>
                 </div>
                 <div class="form-group icon-container">
-                    <img class='custom-icon' src="{% static 'network/user-16-16.png' %}">
+                    <!-- <img class='custom-icon' src="{% static 'network/user-16-16.png' %}"> -->
                     <input class="form-control" type="text" name="first_name" placeholder="First Name" required>
                 </div>
                 <div class="form-group icon-container">
-                    <img class='custom-icon' src="{% static 'network/user-16-16.png' %}">
+                    <!-- <img class='custom-icon' src="{% static 'network/user-16-16.png' %}"> -->
                     <input class="form-control" type="text" name="last_name" placeholder="Last Name" required>
                 </div>
                 <div class="form-group icon-container">
-                    <img class='custom-icon' src="{% static 'network/user-16-16.png' %}">
+                    <!-- <img class='custom-icon' src="{% static 'network/user-16-16.png' %}"> -->
                     <input class="form-control" type="email" name="email" placeholder="Email Address" required>
                 </div>
                 <div class="form-group icon-container">
-                    <img class='custom-icon' src="{% static 'network/key.png' %}">
+                    <!-- <img class='custom-icon' src="{% static 'network/key.png' %}"> -->
                     <input class="form-control" type="password" name="password" placeholder="Password" required>
                 </div>
                 
@@ -41,26 +54,28 @@
     </div>
     <style>
         body {
-            background-color: rgb(62, 57, 57);
-            color: white;
+            background-color: #ffffff;
+            color: #343a40;
         }
         .login-container {
             max-width: 400px;
             margin: auto;
             padding: 50px;
-            background-color: #2f2c2c;
             border-radius: 10px;
+            background-color: #ffffff;
+            /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
         }
         #login-form {
             padding: 20px;
+            border-bottom: 10px;
         }
         .form-control {
-            background-color: #555;
-            color: white;
-            border: none;
+            background-color: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
         }
         .form-control::placeholder {
-            color: #bbb;
+            color: #6c757d;
         }
         .btn-primary {
             background-color: #007bff;
@@ -81,9 +96,9 @@
             margin-right: 10px;
         }
         .alert-primary {
-            background-color: #004085;
+            background-color: #cce5ff;
             border-color: #b8daff;
-            color: #fff;
+            color: #004085;
         }
     </style>
 {% endblock %}

@@ -2,7 +2,13 @@
 {% load static %}
 
 {% block body %}
-
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; text-align: center;">
+    <a class="navbar-brand" href="#" style="font-weight: bold;">My Network</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+       
+        
+    </div>
+</nav>
     {% if message %}
     <div class="alert alert-primary">{{ message }}</div>
     {% endif %}
@@ -12,15 +18,12 @@
             <hr>
             <form action="{% url 'login' %}" method="post">
                 {% csrf_token %}
-               
                 <div class="form-group icon-container">
-                    
-                    <img src="{% static 'network/user-16-16.png' %}" class="custom-icon">
-                    <input autofocus class="form-control"name="username" placeholder="Username">
+                    <!-- <img src="{% static 'network/user-16-16.png' %}" class="custom-icon"> -->
+                    <input autofocus class="form-control" name="username" placeholder="Username">
                 </div>
                 <div class="form-group icon-container">
-                    <!-- <i class="fa-solid fa-lock custom-icon"></i> -->
-                    <img src="{% static 'network/key.png' %}" class="custom-icon">
+                    <!-- <img src="{% static 'network/key.png' %}" class="custom-icon"> -->
                     <input class="form-control" type="password" name="password" placeholder="Password">
                 </div>
                 <input class="btn btn-primary" type="submit" value="Login">
@@ -31,25 +34,33 @@
     </div>
     <style>
         body {
-            background-color: rgb(103, 92, 92);
-            color: white;
+            background-color: white(103, 92, 92);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-        .login-container {
-            background-color: #272525;
+        /* .login-container {
+            background-color: #333;
             padding: 20px;
-            border-radius: 10px;
-        }
+            border-radius: 15px;
+            width: 300px;
+        } */
         .form-control {
-            background-color: #555;
-            color: white;
+            background-color: #cbcbcb;
+            color: #313131;
             border: none;
+            width: 100%;
         }
         .form-control::placeholder {
-            color: #ccc;
+            color: #4d4d4d;
         }
         .btn-primary {
             background-color: #007bff;
             border: none;
+            width: 100%;
         }
         .centered-text {
             text-align: center;
@@ -57,6 +68,7 @@
         .icon-container {
             display: flex;
             align-items: center;
+            margin-bottom: 10px; 
         }
         .custom-icon {
             margin-right: 10px;

@@ -27,6 +27,14 @@
             border-radius: 5px;
         }
 
+        .post-body img.post-image {
+                max-width: 50%; /* Adjust the width as needed */
+                height: auto;
+                border-radius: 5px; /* Optional: add a slight border radius for aesthetics */
+                margin-top: 10px; /* Add some spacing around the image if necessary */
+}
+
+
         #postButton {
             display: inline-block;
             background-color: #007bff;
@@ -61,15 +69,16 @@
           <ul class="navbar-nav mr-auto">
             {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><strong id="username">{{ user.username }}</strong></a>
+                    <a class="nav-link" href="{% url 'profile' user.username %}"><strong id="username">{{ user.username }}</strong></a>
                 </li>
             {% endif %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'index' %}">All Posts</a>
-            </li>
+           
             {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'following' %}">Following</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'post' %}">Post</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}">Log Out</a>
@@ -86,22 +95,161 @@
         </div>
       </nav>
     
-    <div class="body"></div>
-
-    <div>
-        <textarea name="postContent" id="postContent" placeholder="Post" style="height: 50px;"></textarea>
-        <button id="postButton">Post</button>
-    </div>
-    <div id="all-posts-view">
-
-    </div>   
-    {% for post in posts %}
-        <div class="post">
-            <p><strong>{{ post.user.username }}</strong></p>
-            <p>{{ post.content }}</p>
-            <p><small>{{ post.timestamp }}</small></p>
-        </div>
-    {% endfor %}
+    <div class="body">
 
     
-{% endblock %}
+    
+
+        
+        <div class="container">
+            <h1 class="text-center">Recent Posts</h1>
+            
+            {% if Posts %}
+            <div class="post-list">
+                {% for post in Posts %}
+                <div class="post-card border mb-3 p-3">
+                    <div class="post-header">
+                        <strong>User:</strong> {{ post.user.username }}<br>
+                        <small><strong>Posted at:</strong> {{ post.datetime|date:"d M Y, H:i" }}</small>
+                    </div>
+                    <div class="post-body mt-2">
+                        <p>{{ post.caption }}</p>
+                        {% if post.image %}
+                        <img class="post-image img-fluid" src="{{ post.image.url }}" alt="Post Image">
+                        <div class="post-footer mt-2">
+                            <button class="btn btn-secondary comment-button" data-post-id="{{ post.id }}" style="background-color: #6c757d; border: none; border-radius: 20px; padding: 5px 15px; margin-right: 5px;">Comment</button>
+                            <button class="btn btn-primary like-button" data-post-id="{{ post.id }}" style="background-color: #007bff; border: none; border-radius: 20px; padding: 5px 15px;">Like</button>
+                            <span class="like-count">{{ post.likes.count }}</span> 
+                        </div>
+                        
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-center">No posts available. Add a new post <a href="{% url 'post' %}">here</a>.</p>
+            {% endif %}
+        </div>
+    </div>
+    <footer>
+        <div class="footer-container">
+            <!-- COMPANY Section -->
+            <div class="footer-section">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="#about-us">About </a></li>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#terms">Terms and Conditions</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#ad-preferences">Ad Preferences</a></li>
+                    <li><a href="#help">Help</a></li>
+                </ul>
+            </div>
+
+            <!-- WORK WITH US Section -->
+            <div class="footer-section">
+                <h4>WORK WITH US</h4>
+                <ul>
+                    <li><a href="#network">network</a></li>
+                    <li><a href="#advertise">Advertise</a></li>
+                    <li><a href="#ads-blog"> Ads Blog</a></li>
+                    <li><a href="#api">API</a></li>
+                </ul>
+            </div>
+
+            <!-- CONNECT Section -->
+            <div class="footer-section">
+                <h4>CONNECT</h4>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com"><img src="https://freepnglogo.com/images/all_img/facebook-circle-logo-png.png" alt="Facebook"></a> 
+                    <a href="https://twitter.com"><img src="https://freepnglogo.com/images/all_img/1691832581twitter-x-icon-png.png" alt="Twitter"></a> 
+                    <a href="https://www.instagram.com"><img src="https://freepnglogo.com/images/all_img/1725819461instagram-logo.png" alt="Instagram"></a>
+                    <a href="https://www.apple.com/app-store/"><img src="https://freepnglogo.com/images/all_img/1718130679apple-logo-png-transparent-image.png" alt="Download on the App Store"></a>
+                    <a href="https://play.google.com/store/apps?hl=en_US"><img src="https://freepnglogo.com/images/all_img/google-play-2022-icon-282d.png" alt="Get it on Google Play"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 Network, Inc. | <a href="#mobile-version">Mobile version</a></p>
+        </div>
+    </footer>
+    <style>
+        footer {
+    background-color: #f8f9fa;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    width: 100%;
+    position: relative;
+  }
+  
+  .footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .footer-section {
+    flex: 1;
+    margin: 10px;
+  }
+  
+  .footer-section h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #000;
+  }
+  
+  .footer-section ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .footer-section ul li {
+    margin-bottom: 5px;
+  }
+  
+  .footer-section ul li a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 14px;
+  }
+  
+  .footer-section ul li a:hover {
+    text-decoration: underline;
+  }
+  
+  .social-icons a img,
+  .app-links a img {
+    width: 32px;
+    height: auto;
+    margin-right: 10px;
+  }
+  
+  .app-links a img {
+    width: 120px;
+    margin-top: 10px;
+  }
+  
+  .footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  
+  .footer-bottom a {
+    text-decoration: none;
+    color: #007bff;
+  }
+  
+  .footer-bottom a:hover {
+    text-decoration: underline;
+  }
+    </style>
+        {% endblock %}
+        
