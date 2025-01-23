@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from .models import Post, User, Like, Following,Profile
 from django.conf import settings
+from django.db.models import Count, Avg
 
 # from django.contrib.auth.models import User
 
@@ -268,3 +269,15 @@ def update_profile(request):
         return redirect('profile', username=request.user.username)  # Redirect to the profile page after updating
 
     return render(request, "update_profile.html", {"profile": profile})
+
+def post_analysis_dashboard(request):
+    # Query to get post analysis data
+    posts = (
+        Post.objects.annotate(
+            likes_count=Count("likes"),
+            average_likes=Avg("likes__like_state"),
+        )
+        .order_by("-likes_count")
+    )
+
+    return render(request, "dashboard.html", {"posts": posts})

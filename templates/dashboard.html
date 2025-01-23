@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block body %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            height: 20px;
+        }
+
+        .stat-card {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background: #f9f9f9;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h5 {
+            margin-bottom: 10px;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+    </style>
+    <nav class="navbar"></nav>
+    <button class="nav-button" onclick="window.location.href='/profile/varshini_'">Back</button>
+    </nav>
+    <style>
+        .navbar {
+        width: 100%;
+        background-color: #333;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        padding: 10px 0;
+    }
+
+    .nav-button {
+        background-color: #625b88;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: auto;
+        font-size: 16px;
+        border-radius: 4px;
+    }
+
+    .nav-button:hover {
+        background-color: #45a049;
+    }
+    </style>
+
+    <div class="dashboard">
+        <h1>Post Analysis Dashboard</h1>
+
+        <!-- Statistics Section -->
+        <div class="row text-center mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h5>Total Posts</h5>
+                    <p>{{ user.user_posts.count }}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h5>Total Likes</h5>
+                    <p>{{ total_likes }}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h5>Avg Likes/Post</h5>
+                    <p>{{ avg_likes }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top 5 Most Liked Posts -->
+        <div>
+            <h3>Top 5 Most Liked Posts</h3>
+            {% for post in most_liked_posts %}
+            <div>
+                <div class="bar-label">
+                    <span>{{ post.caption|truncatechars:30 }}</span>
+                    <span>{{ post.like_count }} Likes</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" 
+                         style="width: {{ post.like_count|floatformat:1 }}%;" 
+                         aria-valuenow="{{ post.like_count }}" aria-valuemin="0" aria-valuemax="{{ total_likes }}">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Top 5 Users by Post Count -->
+        <div>
+            <h3>Top 5 Users by Post Count</h3>
+            {% for user in top_posters %}
+            <div>
+                <div class="bar-label">
+                    <span>{{ user.user__username }}</span>
+                    <span>{{ user.post_count }} Posts</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-info" role="progressbar" 
+                         style="width: {{ user.post_count|floatformat:1 }}%;" 
+                         aria-valuenow="{{ user.post_count }}" aria-valuemin="0" aria-valuemax="{{ max_post_count }}">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Top 5 Most Followed Users -->
+        <div>
+            <h3>Top 5 Most Followed Users</h3>
+            {% for user in most_followed_users %}
+            <div>
+                <div class="bar-label">
+                    <span>{{ user.user_being_followed__username }}</span>
+                    <span>{{ user.followers }} Followers</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-primary" role="progressbar" 
+                         style="width: {{ user.followers|floatformat:1 }}%;" 
+                         aria-valuenow="{{ user.followers }}" aria-valuemin="0" aria-valuemax="{{ max_followers }}">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

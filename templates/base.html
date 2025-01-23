@@ -10,7 +10,14 @@
         {% endblock scripts %}
     </head>
     <body>
-
+    <style>
+        body {
+        background-image: url("{% static 'images/images.jpg' %}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        }
+    </style>
         
         {% block body %}
 

@@ -40,7 +40,7 @@ class Post(models.Model):
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE,related_name="likes")
     like_state = models.BooleanField(blank=True, null=True)
 
     def __str__(self):
