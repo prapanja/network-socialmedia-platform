@@ -38,7 +38,7 @@ def login_view(request):
         print(username)
         password = request.POST["password"]
         print(password)
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(username=username, password=password)
         print(user)
 
         # Check if authentication successful
@@ -69,9 +69,11 @@ def register(request):
             last_name=last_name,
             username=username,
             email=email,
-            password=password  # create_user hashes the password
+            # password=password  # create_user hashes the password
         )
-        
+        user.set_password(password)
+
+
         user.save()
         return redirect('login')
 
